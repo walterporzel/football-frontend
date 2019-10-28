@@ -1,39 +1,64 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
-class Players extends Component {
-    constructor(props){
-        super(props);
-        this.state ={
-            players: []
+function Players(){
+    const [data, setData] = useState( [] );
+    const [search, setSearch] = useState ( {search: ''} );
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await axios(
+                'https://frozen-headland-94979.herokuapp.com/players'
+            );
+            setData(result.data)
         }
+
+        fetchData();
+    }, []);
+
+    const onSearchChange = (e) => {
+        setSearch({search: e.target.value})
+        console.log(search.search)
     }
-    componentDidMount() {
-        fetch('https://frozen-headland-94979.herokuapp.com/players')
-        .then(results => {
-            return results.json();
-        }).then(data => {
-            this.setState({players: data});
-        })
-    }
-    render(){
-        let players = this.state.players.map((player, index) => {
-            return(
-                <Card>
-                    <PlayerPic src={player.strThumb} />
-                    {player.strPlayer}
-                </Card>
-            )
-        })
-        return (
-            <Wrapper>{players}</Wrapper>
-        )
-    }
+
+    return(
+        <Wrapper>
+            <input type="search" placeholder="search players" onChange={onSearchChange}/>
+            <PlayersWrapper>
+                {data.filter(player => {
+                    let searchValue = search.search.toLowerCase()
+                    let playerName = player.strPlayer.toLowerCase()
+                    if(!searchValue){
+                        return true
+                    }
+                    else if(playerName.includes(searchValue)){
+                        return true
+                    }
+                    else{
+                        return false
+                    }
+                }).map(item => (
+                    <Card>
+                        <PlayerPic src={item.strThumb} />
+                        {item.strPlayer}
+                    </Card>
+                ))}
+            </PlayersWrapper>
+        </Wrapper>
+    )
 }
+
 export default Players
 
 // Page styles
 const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+const PlayersWrapper = styled.div`
     width: 100vw;
     display: flex;
     flex-wrap: wrap;
