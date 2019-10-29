@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
 function Players(){
     const [data, setData] = useState( [] );
@@ -39,10 +40,10 @@ function Players(){
                         return false
                     }
                 }).map(item => (
-                    <Card>
+                    <Link to={'/players/' + item.strPlayer}><Card>
                         <PlayerPic src={item.strThumb} />
                         {item.strPlayer}
-                    </Card>
+                    </Card></Link>
                 ))}
             </PlayersWrapper>
         </Wrapper>
@@ -62,6 +63,7 @@ const PlayersWrapper = styled.div`
     width: 100vw;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 `
 const Card = styled.div`
     border: 1px solid black;

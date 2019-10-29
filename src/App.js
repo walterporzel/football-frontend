@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Route, Link } from "react-router-dom";
 import Players from './Players';
+import PlayerDetail from './PlayerDetail';
 
 function App() {
   return (
     <div>
       <Head>FootballDB</Head>
-      <Players></Players>
+      <Route path='/' exact component = {Players} />
+      <Route path='/players' exact component = {Players} />
+      <Route path='/players/:name' exact component = {PlayerDetail} /> 
     </div>
   );
 }
